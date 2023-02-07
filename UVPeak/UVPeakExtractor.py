@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import os
 import numpy as np
 
-colorText = open(r'colorlist_matplot.txt')
+colorText = open(r'UVPeak\Colorlists\colorlist_matplot.txt')
 colorList = colorText.read().split()
 
 def WavelengthToIndex(wavelength: float)-> int:
@@ -14,7 +14,7 @@ def WavelengthToIndex(wavelength: float)-> int:
 
 
 ## Create Dataframe of Raw Spectra from Given Directory ##
-specDir = r'Spectra\230203_Au-Ag_50-50_430nm_indAliquot'
+specDir = r'UVPeak\Spectra\Operation HEA gold and silver\pulsed lasered 532 nm'
 
 df_list = []
 first = True
