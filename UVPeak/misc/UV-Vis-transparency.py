@@ -15,7 +15,8 @@ def plot_uv_vis_data(directory_path):
     }
 
     # Define the new order for the loadings
-    loading_order = ['0', '1e-6', '1e-5', '1e-4', '1e-3']
+    loading_order = ['0.0', '1e-06', '1e-05', '0.0001', '0.001']
+    # loading_order = [0, 1e-6, 1e-5, 1e-4, 1e-3]
 
     # Load the data from the directory
     dataframes = []
@@ -25,7 +26,7 @@ def plot_uv_vis_data(directory_path):
     for file in os.listdir(directory_path):
         if file.endswith(".txt"):
             parts = file.split('_')
-            loading = parts[1]
+            loading = float(parts[1])  # Convert loading to float
             timepoint = parts[2]
             
             filepath = os.path.join(directory_path, file)
@@ -37,7 +38,7 @@ def plot_uv_vis_data(directory_path):
             timepoints.append(timepoint)
 
     # Sort data by timepoints and then by the new loadings order for legend ordering
-    sorted_indices = sorted(range(len(timepoints)), key=lambda k: (timepoints[k], loading_order.index(loadings[k])))
+    sorted_indices = sorted(range(len(timepoints)), key=lambda k: (timepoints[k], loading_order.index(str(loadings[k]))))
     sorted_dataframes = [dataframes[i] for i in sorted_indices] 
     sorted_loadings = [loadings[i] for i in sorted_indices]
     sorted_timepoints = [timepoints[i] for i in sorted_indices]
@@ -48,7 +49,7 @@ def plot_uv_vis_data(directory_path):
     for df, loading, timepoint in zip(sorted_dataframes, sorted_loadings, sorted_timepoints):
         subset_df = df[(df['Wavelength'] >= 400) & (df['Wavelength'] <= 700)]
         auc = trapz(subset_df['Smoothed Absorbance'], subset_df['Wavelength'])
-        if loading == "0":
+        if loading == 0:
             normalization_factors[timepoint] = auc
         auc_values.append(auc)
 
@@ -59,12 +60,12 @@ def plot_uv_vis_data(directory_path):
     
     # Line graph on the left side
     for df, loading, timepoint in zip(sorted_dataframes, sorted_loadings, sorted_timepoints):
-        if loading in ['1e-4', '1e-3']:
+        if loading in [1e-4, 1e-3]:
             alpha_value = 0.05
         else:
             alpha_value = 1.0
         
-        color = colormaps[timepoint](np.linspace(0.25, 1, len(loading_order))[loading_order.index(loading)])
+        color = colormaps[timepoint](np.linspace(0.25, 1, len(loading_order))[loading_order.index(str(loading))])
         ax[0].plot(df['Wavelength'], df['Smoothed Absorbance'], color=color, linewidth=2, alpha=alpha_value, label=f'Loading: {loading}, Time: {timepoint}')
 
     ax[0].set_xlabel('Wavelength (nm)', fontsize=16)
@@ -92,6 +93,6 @@ def plot_uv_vis_data(directory_path):
     plt.tight_layout()
     plt.show()
 
-# Call the function with the path to your directory
+## MAIN ##
 directory_path = r"UVPeak\\UV-Vis_CB-loading_Thesis-Revisions\\ambient"
 plot_uv_vis_data(directory_path)
