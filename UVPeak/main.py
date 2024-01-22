@@ -35,12 +35,13 @@ def get_absorbance_at_wavelength(df, wavelength=808):
     return closest_wavelength['Absorbance'].values[0]
 
 # Paths to the data directory and colors file
-data_dir = r'UVPeak\Spectra\230829_cbPDMS_wtLoadings_again'  # Replace with the actual path
+data_dir = r'UVPeak\Spectra\230829_cbPDMS_wtLoadings_again'
 colors_file = r'UVPeak\Colorlists\colorlist_lear.txt'  # Replace with the actual path
 
 # Reading the colors
 with open(colors_file, 'r') as file:
-    hex_colors = [line.strip() for line in file if line.strip()]
+    # hex_colors = [line.strip() for line in file if line.strip()]
+    hex_colors = ['#FF0000', '#0000FF', '#00FF00', '#FFFF00', '#FF00FF', '#00FFFF']
 
 # Processing the data files
 files = [f for f in os.listdir(data_dir) if f.endswith('.txt')]
@@ -78,30 +79,37 @@ for category in categories:
 plt.axvline(x=400, color='grey', linestyle='--', linewidth=1)
 plt.axvline(x=700, color='grey', linestyle='--', linewidth=1)
 plt.xlim(300, 850)
-plt.xlabel('Wavelength')
-plt.ylabel('Absorbance')
-plt.title('Full UV-Vis Spectra for All Categories')
-plt.legend()
+
+fontsize = 40
+plt.xlabel('Wavelength /cm$^{-1}$', fontsize=fontsize)
+plt.ylabel('Absorbance', fontsize=fontsize)
+# plt.xticks(fontsize=fontsize/2)
+# plt.yticks(fontsize=fontsize/2, ticks=[0, 1, 2])
+# plt.ticklabel_format(style='sci', axis='x', scilimits=(0,0))
+plt.tick_params(axis='both', which='major', direction='out', length=6, width=2)
+plt.grid(False)
+plt.legend(fontsize=fontsize/2)
+
 plt.show()
 
-# Plotting the bar graphs
-fig, ax = plt.subplots(1, 2, figsize=(20, 10))
+# # Plotting the bar graphs
+# fig, ax = plt.subplots(1, 2, figsize=(20, 10))
 
-# Bar plot for integrated values
-for category, values in integrated_values.items():
-    ax[0].bar([f'{category}, Time {i}' for i in range(len(values))], values, color=color_mappings[category])
-ax[0].set_title('Integrated Spectrum Values for Each Spectrum')
-ax[0].set_ylabel('Integrated Absorbance')
-ax[0].set_xlabel('Category and Time')
-ax[0].tick_params(axis='x', rotation=45)
+# # Bar plot for integrated values
+# for category, values in integrated_values.items():
+#     ax[0].bar([f'{category}, Time {i}' for i in range(len(values))], values, color=color_mappings[category])
+# ax[0].set_title('Integrated Spectrum Values for Each Spectrum')
+# ax[0].set_ylabel('Integrated Absorbance')
+# ax[0].set_xlabel('Category and Time')
+# ax[0].tick_params(axis='x', rotation=45)
 
-# Bar plot for absorbance at 808 nm
-for category, values in absorbance_at_808.items():
-    ax[1].bar([f'{category}, Time {i}' for i in range(len(values))], values, color=color_mappings[category])
-ax[1].set_title('Absorbance at 808 nm for Each Spectrum')
-ax[1].set_ylabel('Absorbance')
-ax[1].set_xlabel('Category and Time')
-ax[1].tick_params(axis='x', rotation=45)
+# # Bar plot for absorbance at 808 nm
+# for category, values in absorbance_at_808.items():
+#     ax[1].bar([f'{category}, Time {i}' for i in range(len(values))], values, color=color_mappings[category])
+# ax[1].set_title('Absorbance at 808 nm for Each Spectrum')
+# ax[1].set_ylabel('Absorbance')
+# ax[1].set_xlabel('Category and Time')
+# ax[1].tick_params(axis='x', rotation=45)
 
 plt.tight_layout()
 plt.show()
